@@ -83,64 +83,7 @@ Deploy the application in Kubernetes with:
 kubectl create -f kube/deployment
 ```
 
-You can visit the application at http://minkube_ip:32000
-
-> (Find the minikube ip address via `minikube ip`)
-
-You can post messages to the queue by via http://minkube_ip:32000/submit?quantity=2
-
-You should be able to see the number of pending messages from http://minkube_ip:32000/metrics and from the custom metrics endpoint:
-
-```bash
-kubectl get --raw "/apis/custom.metrics.k8s.io/v1beta1/namespaces/default/pods/*/messages" | jq .
-```
-
-## Autoscaling workers
-
-You can scale the application in proportion to the number of messages in the queue with the Horizontal Pod Autoscaler. You can deploy the HPA with:
-
-```bash
-kubectl create -f kube/hpa.yaml
-```
-
-You can send more traffic to the application with:
-
-```bash
-while true; do curl -d "quantity=1" -X POST http://minkube_ip:32000/submit ; sleep 4; done
-```
-
-When the application can't cope with the number of incoming messages, the autoscaler increases the number of pods in 3 minute intervals.
-
-You may need to wait three minutes before you can see more pods joining the deployment with:
-
-```bash
-kubectl get pods
-```
-
-The autoscaler will remove pods from the deployment every 5 minutes.
-
-You can inspect the event and triggers in the HPA with:
-
-```bash
-kubectl get hpa spring-boot-hpa
-```
-
-## Notes
-
-The configuration for metrics and metrics server is configured to run on minikube only.
-
-**You won't be able to run the same YAML files for metrics and custom metrics server on your cluster or EKS, GKE, AKS, etc.**
-
-Also, there are secrets checked in the repository to deploy the Prometheus adapter.
-
-**In production, you should generate your own secrets and (possibly) not check them into version control.**
-
-If you wish to run metrics and custom metrics server in production, you should check out the following resources:
-
-- [Metrics server](https://github.com/kubernetes-sigs/metrics-server)
-- [How to install Prometheus and the Promtheus Adapter](https://github.com/DirectXMan12/k8s-prometheus-adapter/blob/master/docs/walkthrough.md)
-
-## List of useful commands from website - https://learnk8s.io/blog/scaling-spring-boot-microservices
+### Full set of command to package and deploy application using kubernetes
 
 To connect docker client to minikube**
 
@@ -209,6 +152,65 @@ kubectl delete deployment.apps/backend service/backend
 ```bash
 kubectl delete deployment.apps/frontend service/frontend 
 ```
+
+
+You can visit the application at http://minkube_ip:32000
+
+> (Find the minikube ip address via `minikube ip`)
+
+You can post messages to the queue by via http://minkube_ip:32000/submit?quantity=2
+
+You should be able to see the number of pending messages from http://minkube_ip:32000/metrics and from the custom metrics endpoint:
+
+```bash
+kubectl get --raw "/apis/custom.metrics.k8s.io/v1beta1/namespaces/default/pods/*/messages" | jq .
+```
+
+## Autoscaling workers
+
+You can scale the application in proportion to the number of messages in the queue with the Horizontal Pod Autoscaler. You can deploy the HPA with:
+
+```bash
+kubectl create -f kube/hpa.yaml
+```
+
+You can send more traffic to the application with:
+
+```bash
+while true; do curl -d "quantity=1" -X POST http://minkube_ip:32000/submit ; sleep 4; done
+```
+
+When the application can't cope with the number of incoming messages, the autoscaler increases the number of pods in 3 minute intervals.
+
+You may need to wait three minutes before you can see more pods joining the deployment with:
+
+```bash
+kubectl get pods
+```
+
+The autoscaler will remove pods from the deployment every 5 minutes.
+
+You can inspect the event and triggers in the HPA with:
+
+```bash
+kubectl get hpa spring-boot-hpa
+```
+
+## Notes
+
+The configuration for metrics and metrics server is configured to run on minikube only.
+
+**You won't be able to run the same YAML files for metrics and custom metrics server on your cluster or EKS, GKE, AKS, etc.**
+
+Also, there are secrets checked in the repository to deploy the Prometheus adapter.
+
+**In production, you should generate your own secrets and (possibly) not check them into version control.**
+
+If you wish to run metrics and custom metrics server in production, you should check out the following resources:
+
+- [Metrics server](https://github.com/kubernetes-sigs/metrics-server)
+- [How to install Prometheus and the Promtheus Adapter](https://github.com/DirectXMan12/k8s-prometheus-adapter/blob/master/docs/walkthrough.md)
+
 
 
 
