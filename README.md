@@ -142,43 +142,73 @@ If you wish to run metrics and custom metrics server in production, you should c
 
 ## List of useful commands from website - https://learnk8s.io/blog/scaling-spring-boot-microservices
 
-**To connect docker client to minikube**
+To connect docker client to minikube**
 
+```bash
 minikube docker-env
+```
+To point your docker client to the docker daemon inside the minikube VM by running this command first**
 
-**To point your docker client to the docker daemon inside the minikube VM by running this command first**
-
+```bash
 eval $(minikube docker-env)
+```
 
+```bash
 docker build -t spring-k8s-hpa .
+```
 
+```bash
 docker images | grep spring
+```
 
+```bash
 kubectl create -f kube/deployment
+```
 
+```bash
 kubectl get pods -l=app=queue
+```
 
+```bash
 kubectl get pods -l=app=fe
+```
 
+```bash
 kubectl get pods -l=app=be
+```
 
+```bash
 minikube service frontend
+```
 
+```bash
 minikube service backend
+```
 
+```bash
 kubectl scale --replicas=5 deployment/backend
+```
 
+```bash
 kubectl get pods
+```
 
+```bash
 kubectl scale --replicas=1 deployment/backend
+```
 
+```bash
 kubectl get all
+```
 
 **To delete pods**
 
+```bash
 kubectl delete deployment.apps/backend service/backend
-
+```
+```bash
 kubectl delete deployment.apps/frontend service/frontend 
+```
 
 
 
